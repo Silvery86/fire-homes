@@ -15,14 +15,15 @@ export default function AuthButtons() {
                     <Button className="cursor-pointer" onClick={() => auth.logout()}>Logout</Button>
                 </>
             ) : (
-                <>
-                    <Link href="/login" className="hover:underline">
+                <div className="flex space-x-4 items-center">
+                    <Link href="/login" className="button-link">
                         Login
                     </Link>
-                    <Link href="/register" className="hover:underline">
+                    <div className="h-7 w-[1px] bg-secondary" />
+                    <Link href="/register" className="button-link">
                         Register
                     </Link>
-                </>
+                </div>
             )}
         </>
     );
