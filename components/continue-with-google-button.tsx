@@ -1,14 +1,26 @@
-'use client'
+"use client";
 
 import { useAuth } from "@/context/auth";
-import { Button } from "./ui/button"
-
+import { Button } from "./ui/button";
+import Image from "next/image";
 
 export default function ContinueWithGoogleButton() {
-    const auth = useAuth();
+  const auth = useAuth();
 
-    return (
-        <Button onClick={() => auth?.signInWithGoogle()}>
-            Continue with Google
-        </Button>
-    )}
+  return (
+    <Button
+      type="button"
+      onClick={() => auth.signInWithGoogle()}
+      variant="outline"
+      className="w-full bg-white hover:bg-gray-50 border border-gray-300 text-gray-700 font-medium flex items-center justify-center gap-2 shadow-sm"
+    >
+      <Image
+        src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+        alt="Google"
+        width={18}
+        height={18}
+      />
+      Continue with Google
+    </Button>
+  );
+}

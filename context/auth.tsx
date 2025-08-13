@@ -1,11 +1,12 @@
 "use client";
 
 import { auth } from "@/firebase/client";
-import { GoogleAuthProvider, signInWithPopup, User } from "firebase/auth";
+import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, User } from "firebase/auth";
 import React, { useContext, useEffect, useState } from "react";
 
 type AuthContextType = {
     currentUser: User | null;
+    signInWithEmail: (email: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
     signInWithGoogle: () => Promise<void>;
 }
@@ -31,12 +32,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const provider = new GoogleAuthProvider();
         await signInWithPopup(auth, provider)
     }
-
+    const signInWithEmail = async (email: string, password: string) => {
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+        } catch (error) {
+            throw error;
+        }
+    }
 
     return (
         <AuthContext.Provider value={{ 
             currentUser,
             logout,
+            signInWithEmail, 
             signInWithGoogle
              }}>
             {children}
@@ -44,5 +52,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     );
 }
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const ctx = useContext(AuthContext);
+  if (!ctx) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return ctx;
+};
     
