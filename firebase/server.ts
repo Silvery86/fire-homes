@@ -1,5 +1,6 @@
-import { initializeApp } from "firebase-admin";
+import admin from "firebase-admin";
 import { getApps, ServiceAccount } from "firebase-admin/app";
+import { Auth, getAuth } from "firebase-admin/auth";
 import { Firestore, getFirestore } from "firebase-admin/firestore";
 
 const serviceAccount = {
@@ -15,18 +16,19 @@ const serviceAccount = {
   "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40fire-homes-47284.iam.gserviceaccount.com",
   "universe_domain": "googleapis.com"
 }
-var admin = require("firebase-admin");
-let firestore: Firestore
-
+let firestore: Firestore;
+let auth: Auth;
 const currentApps = getApps();
 if (!currentApps.length) {
-    const app = initializeApp({
+    const app = admin.initializeApp({
         credential: admin.credential.cert(serviceAccount as ServiceAccount)
     });
     firestore = getFirestore(app);
+    auth = getAuth(app);
 }else {
     const app = currentApps[0];
     firestore = getFirestore(app);
+    auth = getAuth(app);
 }
 
-export { firestore };
+export { firestore, auth };

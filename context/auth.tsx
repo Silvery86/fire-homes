@@ -1,8 +1,9 @@
 "use client";
 
 import { auth } from "@/firebase/client";
-import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, User } from "firebase/auth";
+import { GoogleAuthProvider, ParsedToken, signInWithEmailAndPassword, signInWithPopup, User } from "firebase/auth";
 import React, { useContext, useEffect, useState } from "react";
+import { removeToken, setToken } from "./actions";
 
 type AuthContextType = {
     currentUser: User | null;
@@ -15,10 +16,26 @@ const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const [customClaims, setCustomClaims] = useState<ParsedToken | null>(null);
 
     useEffect(() => {
-        const unsubcribe = auth.onAuthStateChanged((user) => {
+        const unsubcribe = auth.onAuthStateChanged(async (user) => {
             setCurrentUser(user);
+            if (user) {
+                const tokenResult = await user.getIdTokenResult();
+                const token = tokenResult.token;
+                const refreshToken = user.refreshToken;
+                const claims = tokenResult.claims;
+                setCustomClaims(claims ?? null);
+                if (token && refreshToken) {
+                    setToken({
+                        token,
+                        refreshToken: refreshToken
+                    });
+                }
+            }else {
+                await removeToken();
+            }
         })
         return () => unsubcribe();
         
