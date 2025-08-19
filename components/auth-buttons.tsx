@@ -23,7 +23,7 @@ export default function AuthButtons() {
                                         alt={`${auth.currentUser.displayName || "User"}'s avatar`}
                                         width={32}
                                         height={32}
-                                        className="object-cover rounded-full"                       
+                                        className="object-cover rounded-full"
                                     />
                                 )}
                                 <AvatarFallback>
@@ -36,30 +36,34 @@ export default function AuthButtons() {
                                 <div>{auth?.currentUser?.displayName || "User"}</div>
                                 <div>{auth?.currentUser.email || "User Email"}</div>
                             </DropdownMenuLabel>
-                            <DropdownMenuSeparator asChild/>
-                            <DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem asChild>
                                 <Link href="/account" className="w-full">
-                                   My Account
+                                    My Account
                                 </Link>
                             </DropdownMenuItem>
+                            {!!auth.customClaims?.admin && (
+                                <DropdownMenuItem asChild>
+                                    <Link href="/admin-dashboard" className="w-full">
+                                        Admin Dashboard
+                                    </Link>
+                                </DropdownMenuItem>
+                            )}
+                            {!auth.customClaims?.admin && (
+                                <DropdownMenuItem asChild>
+                                    <Link href="/account/my-favourites" className="w-full">
+                                        My Favourites
+                                    </Link>
+                                </DropdownMenuItem>
+                            )}
                             <DropdownMenuItem>
-                                <Link href="/admin-dashboard" className="w-full">
-                                   Admin Dashboard
-                                </Link>
-                            </DropdownMenuItem> 
-                             <DropdownMenuItem>
-                                <Link href="/account/my-favourites" className="w-full">
-                                   My Favourites
-                                </Link>
-                            </DropdownMenuItem> 
-                             <DropdownMenuItem>
                                 <Button className="cursor-pointer w-full" onClick={async () => await auth.logout()}>
                                     Logout
                                 </Button>
-                            </DropdownMenuItem>                        
+                            </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
-                   
+
                 </>
             ) : (
                 <div className="flex space-x-4 items-center">

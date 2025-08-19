@@ -10,6 +10,7 @@ type AuthContextType = {
     signInWithEmail: (email: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
     signInWithGoogle: () => Promise<void>;
+    customClaims: ParsedToken | null;
 }
 
 const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
@@ -62,7 +63,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             currentUser,
             logout,
             signInWithEmail, 
-            signInWithGoogle
+            signInWithGoogle,
+            customClaims
              }}>
             {children}
         </AuthContext.Provider>
