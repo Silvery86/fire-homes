@@ -1,3 +1,5 @@
+import Breadcrumbs from "@/components/breadcrmbs";
+
 export default function AdminDashboard() {
     return (
         <div className="flex flex-col items-center justify-center h-screen">
