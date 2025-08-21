@@ -1,11 +1,18 @@
 import Breadcrumbs from "@/components/breadcrmbs";
+import { Button } from "@/components/ui/button";
+import { PlusCircleIcon } from "lucide-react";
+import Link from "next/link";
+
 
 export default function AdminDashboard() {
     return (
-        <div className="flex flex-col items-center justify-center h-screen">
-            <h1 className="text-4xl font-bold mb-4">Admin Dashboard</h1>
-            <p className="text-lg">Welcome to the admin dashboard!</p>
-            <p className="text-sm text-gray-500">This page is only accessible to users with admin privileges.</p>
+        <div>
+           <h1 className="text-4xl font-bold mt-6">Admin Dashboard</h1>
+           <Button className="mt-4" variant="default">
+            <Link href="/admin-dashboard/new" className="inline-flex pl-2 gap-2 items-center">
+            <PlusCircleIcon /><span className="uppercase">New Property</span>
+            </Link>
+           </Button>
         </div>
     );
 }

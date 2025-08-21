@@ -7,9 +7,11 @@ export default function AdminLayout({
 }) {
     return (
         <div className="max-w-screen mx-auto px-4 py-10">
-            <div>
+            <div className="max-w-7xl mx-auto">
             <Breadcrumbs />
-            {children}
+            <div className="flex flex-col items-start justify-start">
+                {children}
+            </div>           
             </div>                  
         </div>
     );
