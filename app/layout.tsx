@@ -40,8 +40,7 @@ export default function RootLayout({
             </Link>
            <AuthButtons />
           </div>
-        </nav>
-        <Breadcrumbs />
+        </nav>  
         {children}          
         </AuthProvider>
       </body>
