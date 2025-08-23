@@ -6,21 +6,25 @@ import { useForm } from "react-hook-form";
 import z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
+import { Button } from "./ui/button";
 
 type PropertyFormProps = {
+    submitButtonLabel: React.ReactNode
     handleSubmit: (data: z.infer<typeof PropertyDataSchema>) => void;
 }
 
-export default function PropertyForm({ handleSubmit }: PropertyFormProps) {
+export default function PropertyForm({ handleSubmit, submitButtonLabel }: PropertyFormProps) {
     const form = useForm<z.infer<typeof PropertyDataSchema>>({
-        resolver: zodResolver(PropertyDataSchema),
+        resolver: zodResolver(PropertyDataSchema) as any,
         defaultValues: {
-            address1: "",
+            address1: "123 Main St",
             address2: "",
-            city: "",
-            postcode: "",
-            price: 0,
-            description: "",
+            city: "NYC",
+            postcode: "ABC123",
+            price: 1,
+            description: "Default description text for validation.",
             bedrooms: 1,
             bathrooms: 1,
             status: "draft",
@@ -30,14 +34,14 @@ export default function PropertyForm({ handleSubmit }: PropertyFormProps) {
         <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <fieldset>
+                    <fieldset className="flex flex-col gap-4">
                         <FormField control={form.control} name="status" render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Status</FormLabel>
                                 <FormControl>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <SelectTrigger>
-                                            <SelectValue/>
+                                            <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectGroup>
@@ -52,8 +56,85 @@ export default function PropertyForm({ handleSubmit }: PropertyFormProps) {
                                 <FormMessage />
                             </FormItem>
                         )} />
+                        <FormField control={form.control} name="address1" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Address Line 1</FormLabel>
+                                <FormControl>
+                                    <Input {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                        <FormField control={form.control} name="address2" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Address Line 2</FormLabel>
+                                <FormControl>
+                                    <Input {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                        <FormField control={form.control} name="city" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>City</FormLabel>
+                                <FormControl>
+                                    <Input {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                        <FormField control={form.control} name="postcode" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Post Code</FormLabel>
+                                <FormControl>
+                                    <Input {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                    </fieldset>
+                    <fieldset className="flex flex-col gap-4">
+                        <FormField control={form.control} name="price" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Price</FormLabel>
+                                <FormControl>
+                                    <Input {...field} type="number" />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                        <FormField control={form.control} name="bedrooms" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Bedrooms</FormLabel>
+                                <FormControl>
+                                    <Input {...field} type="number" />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                        <FormField control={form.control} name="bathrooms" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Bathrooms</FormLabel>
+                                <FormControl>
+                                    <Input {...field} type="number" />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                        <FormField control={form.control} name="description" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Description</FormLabel>
+                                <FormControl>
+                                    <Textarea {...field} rows={7} className="resize-none" />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
                     </fieldset>
                 </div>
+                <Button type="submit" className="max-w-md mx-auto mt-2 w-full flex gap-2">
+                    {submitButtonLabel}
+                </Button>
             </form>
         </Form>
     );
