@@ -19,12 +19,12 @@ export default function PropertyForm({ handleSubmit, submitButtonLabel }: Proper
     const form = useForm<z.infer<typeof PropertyDataSchema>>({
         resolver: zodResolver(PropertyDataSchema) as any,
         defaultValues: {
-            address1: "123 Main St",
+            address1: "",
             address2: "",
-            city: "NYC",
-            postcode: "ABC123",
+            city: "",
+            postcode: "",
             price: 1,
-            description: "Default description text for validation.",
+            description: "",
             bedrooms: 1,
             bathrooms: 1,
             status: "draft",
