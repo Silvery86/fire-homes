@@ -1,9 +1,23 @@
 import { getProperties } from "@/data/properties";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
+import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "./ui/table";
+import Link from "next/link";
+import { Button } from "./ui/button";
 
-export default async function PropertiesTable() {
-    const { data } = await getProperties();
-    console.log(data);
+export default async function PropertiesTable(
+    {
+        page = 1
+    }:
+    {
+        page?: number;
+    }
+) {
+    const { data, totalPages } = await getProperties({
+        pagination: {
+            page,
+            pageSize: 2
+        }
+    });
+    console.log({data, totalPages});
     return (
         <>
             {!data && <div className="w-full text-center text-primary py-20 font-bold text-3xl">No found data</div>}
@@ -37,6 +51,19 @@ export default async function PropertiesTable() {
                             </TableRow>
                         )})}
                     </TableBody>
+                    <TableFooter>
+                        <TableRow>
+                            <TableCell colSpan={4} className="text-center">
+                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
+                                    <Button key={pageNumber} asChild variant="outline" size="sm" className="mx-1">
+                                        <Link href={`/admin-dashboard?page=${pageNumber}`} className={pageNumber === page ? "bg-primary text-primary-foreground" : ""}>{pageNumber}
+                                        </Link>
+                                    </Button>
+                                ))}
+                                <div>Page {page} of {totalPages}</div>
+                            </TableCell>
+                        </TableRow>
+                    </TableFooter>
                 </Table>}
         </>
     );
