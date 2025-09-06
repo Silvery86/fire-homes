@@ -5,7 +5,7 @@ import { useAuth } from "@/context/auth";
 import { PropertyDataSchema } from "@/validation/propertySchema";
 import { PlusCircleIcon } from "lucide-react";
 import z from "zod";
-import { saveNewProperty } from "./action";
+import { createProperty } from "./action";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -20,7 +20,7 @@ export default function NewPropertyForm() {
             return;
         }
 
-        const response = await saveNewProperty({ ...data, token });
+        const response = await createProperty(data, token);
 
         if (response.error) {
             toast.error("Error", { description: response.message });
