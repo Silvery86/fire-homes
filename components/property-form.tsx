@@ -9,26 +9,36 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
+import { Property } from "@/types/property";
 
 type PropertyFormProps = {
     submitButtonLabel: React.ReactNode
     handleSubmit: (data: z.infer<typeof PropertyDataSchema>) => void;
+    defaultValues?: z.infer<typeof PropertyDataSchema>;
 }
 
-export default function PropertyForm({ handleSubmit, submitButtonLabel }: PropertyFormProps) {
+export default function PropertyForm({
+    handleSubmit,
+    submitButtonLabel,
+    defaultValues
+}: PropertyFormProps) {
+    const combinedDefaultValues : z.infer<typeof PropertyDataSchema> = {
+        ...{
+        address1: "",
+        address2: "",
+        city: "",
+        postcode: "",
+        price: 1,
+        description: "",
+        bedrooms: 1,
+        bathrooms: 1,
+        status: "draft",
+        },
+        ...defaultValues
+    }
     const form = useForm<z.infer<typeof PropertyDataSchema>>({
         resolver: zodResolver(PropertyDataSchema) as any,
-        defaultValues: {
-            address1: "",
-            address2: "",
-            city: "",
-            postcode: "",
-            price: 1,
-            description: "",
-            bedrooms: 1,
-            bathrooms: 1,
-            status: "draft",
-        }
+        defaultValues: combinedDefaultValues,
     });
     return (
         <Form {...form}>
@@ -132,10 +142,10 @@ export default function PropertyForm({ handleSubmit, submitButtonLabel }: Proper
                         )} />
                     </fieldset>
                 </div>
-                <Button 
-                type="submit" 
-                className="max-w-md mx-auto mt-2 w-full flex gap-2"
-                disabled={form.formState.isSubmitting}
+                <Button
+                    type="submit"
+                    className="max-w-md mx-auto mt-2 w-full flex gap-2"
+                    disabled={form.formState.isSubmitting}
                 >
                     {submitButtonLabel}
                 </Button>
