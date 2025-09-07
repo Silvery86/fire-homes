@@ -2,7 +2,9 @@ import { getProperties } from "@/data/properties";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "./ui/table";
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { PencilIcon } from "lucide-react";
+import { EyeIcon, PencilIcon } from "lucide-react";
+import numeral from "numeral";
+import PropertyStatusBadge from "./property-status-badge";
 
 export default async function PropertiesTable(
     {
@@ -46,9 +48,14 @@ export default async function PropertiesTable(
                             return (
                             <TableRow key={property.id}>
                                 <TableCell className="font-medium">{address}</TableCell>
-                                <TableCell>${property.price.toLocaleString()}</TableCell>
-                                <TableCell>{property.status}</TableCell>
-                                <TableCell className="text-right text-primary font-bold hover:underline">View / {" "}
+                                <TableCell>{numeral(property.price).format("0,0[.]00 $")}</TableCell>
+                                <TableCell><PropertyStatusBadge status={property.status} /></TableCell>
+                                <TableCell className="flex gap-2 justify-end">
+                                    <Button asChild variant="outline" size="icon" className="p-0">
+                                        <Link href={`/admin-dashboard/property/${property.id}`}>
+                                        <EyeIcon />
+                                        </Link>
+                                    </Button>
                                     <Button asChild variant="outline" size="icon" className="p-0">
                                         <Link href={`/admin-dashboard/edit/${property.id}`}>
                                         <PencilIcon />
@@ -60,14 +67,20 @@ export default async function PropertiesTable(
                     </TableBody>
                     <TableFooter>
                         <TableRow>
-                            <TableCell colSpan={4} className="text-center">
-                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
-                                    <Button key={pageNumber} asChild variant="outline" size="sm" className="mx-1">
-                                        <Link href={`/admin-dashboard?page=${pageNumber}`} className={pageNumber === page ? "bg-primary text-primary-foreground" : ""}>{pageNumber}
+                            <TableCell colSpan={4} className="text-center">               
+                                     {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (                                    
+                                         <Button 
+                                         disabled={pageNumber === page}
+                                         key={pageNumber} 
+                                         asChild={pageNumber !== page} 
+                                         variant="outline" 
+                                         size="sm" 
+                                         className="mx-1"
+                                         >
+                                        <Link href={`/admin-dashboard?page=${pageNumber}`}>{pageNumber}
                                         </Link>
-                                    </Button>
+                                        </Button>                                   
                                 ))}
-                                <div>Page {page} of {totalPages}</div>
                             </TableCell>
                         </TableRow>
                     </TableFooter>
