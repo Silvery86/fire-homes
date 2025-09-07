@@ -5,11 +5,12 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { useRouter } from "next/navigation";
 
 
 export default function AuthButtons() {
     const auth = useAuth();
-
+    const router = useRouter();
     return (
         <>
             {auth?.currentUser ? (
@@ -57,7 +58,10 @@ export default function AuthButtons() {
                                 </DropdownMenuItem>
                             )}
                             <DropdownMenuItem>
-                                <Button className="cursor-pointer w-full" onClick={async () => await auth.logout()}>
+                                <Button className="cursor-pointer w-full" onClick={async () => {
+                                    await auth.logout()
+                                    router.refresh();
+                                    }}>
                                     Logout
                                 </Button>
                             </DropdownMenuItem>

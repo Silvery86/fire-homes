@@ -12,7 +12,6 @@ export default async function AdminDashboard({
 }
 ) {
     const searchParamsValue = await searchParams;
-    console.log({searchParamsValue});
     return (
         <div className="w-full">
            <h1 className="text-4xl font-bold mt-6">Admin Dashboard</h1>
