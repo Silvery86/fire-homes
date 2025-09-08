@@ -1,6 +1,6 @@
 "use client";
 
-import { PropertyDataSchema } from "@/validation/propertySchema";
+import { PropertySchema } from "@/validation/propertySchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import z from "zod";
@@ -10,11 +10,12 @@ import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import { Property } from "@/types/property";
+import MultiImageUploader, { ImageUpload } from "./multi-image-uploader";
 
 type PropertyFormProps = {
     submitButtonLabel: React.ReactNode
-    handleSubmit: (data: z.infer<typeof PropertyDataSchema>) => void;
-    defaultValues?: z.infer<typeof PropertyDataSchema>;
+    handleSubmit: (data: z.infer<typeof PropertySchema>) => void;
+    defaultValues?: z.infer<typeof PropertySchema>;
 }
 
 export default function PropertyForm({
@@ -22,22 +23,23 @@ export default function PropertyForm({
     submitButtonLabel,
     defaultValues
 }: PropertyFormProps) {
-    const combinedDefaultValues : z.infer<typeof PropertyDataSchema> = {
+    const combinedDefaultValues: z.infer<typeof PropertySchema> = {
         ...{
-        address1: "",
-        address2: "",
-        city: "",
-        postcode: "",
-        price: 1,
-        description: "",
-        bedrooms: 1,
-        bathrooms: 1,
-        status: "draft",
+            address1: "",
+            address2: "",
+            city: "",
+            postcode: "",
+            price: 1,
+            description: "",
+            bedrooms: 1,
+            bathrooms: 1,
+            status: "draft",
+            images: [],
         },
         ...defaultValues
     }
-    const form = useForm<z.infer<typeof PropertyDataSchema>>({
-        resolver: zodResolver(PropertyDataSchema) as any,
+    const form = useForm<z.infer<typeof PropertySchema>>({
+        resolver: zodResolver(PropertySchema) as any,
         defaultValues: combinedDefaultValues,
     });
     return (
@@ -142,6 +144,19 @@ export default function PropertyForm({
                         )} />
                     </fieldset>
                 </div>
+                <FormField control={form.control} name="images" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Upload Images</FormLabel>
+                        <FormControl>
+                            <MultiImageUploader onImagesChange={(images: ImageUpload[]) => {
+                                form.setValue("images", images);
+                            }}
+                                images={field.value}
+                            />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )} />
                 <Button
                     type="submit"
                     className="max-w-md mx-auto mt-2 w-full flex gap-2"

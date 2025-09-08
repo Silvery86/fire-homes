@@ -56,6 +56,7 @@ export default function EditPropertyForm({
                     bedrooms,
                     bathrooms,
                     status,
+                    images: [],
                 }}
             />
         </div>

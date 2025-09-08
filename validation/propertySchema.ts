@@ -13,4 +13,14 @@ export const PropertyDataSchema = z.object({
     bedrooms: z.coerce.number().min(1, "At least 1 bedroom is required"),
     bathrooms: z.coerce.number().min(1, "At least 1 bathroom is required"),
     status: z.enum(["draft", "for-sale", "withdrawn", "sold"]),
-})
+});
+
+export const PropertyImagesSchema = z.object({
+    images: z.array(z.object({
+        id: z.string(),
+        url: z.string(),
+        file: z.instanceof(File).optional(),
+    })).min(1, "At least one image is required").max(10, "You can upload up to 10 images"),
+});
+
+export const PropertySchema = PropertyDataSchema.and(PropertyImagesSchema);
