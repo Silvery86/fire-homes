@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { Button } from "./ui/button";
-import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
+import { DragDropContext, Draggable, Droppable, DropResult } from "@hello-pangea/dnd";
 import Image from "next/image";
 import { Badge } from "./ui/badge";
 import { HandIcon, MoveIcon, XIcon } from "lucide-react";
@@ -39,12 +39,23 @@ export default function MultiImageUploader(
         })
         onImagesChange([...images, ...newImages]);
     }
+    const handleDragEnd = (result: DropResult) => {
+        if (!result.destination) return;
+        const reorderedImages = Array.from(images);
+        const [removed] = reorderedImages.splice(result.source.index, 1);
+        reorderedImages.splice(result.destination.index, 0, removed);
+        onImagesChange(reorderedImages);
+    }
+    const handleDeleteImage = (id: string) => {
+        const filteredImages = images.filter(image => image.id !== id);
+        onImagesChange(filteredImages);
+    }
     return (<div className="w-full max-w-3xl mx-auto p-4">
         <input hidden ref={uploadInputRef} type="file" multiple accept="image/*" onChange={handleFileChange} />
         <Button className="w-full" variant="outline" type="button" onClick={() => uploadInputRef.current?.click()}>
             Upload Images
         </Button>
-        <DragDropContext onDragEnd={() => { }}>
+        <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable droppableId="property-images" direction="vertical">
                 {(provided) => (
                     <div {...provided.droppableProps} ref={provided.innerRef} >
@@ -62,7 +73,7 @@ export default function MultiImageUploader(
                                                 <Image src={image.url} alt={`Property Image ${index + 1}`} className="object-cover" fill />
                                             </div>
                                             <div className="flex-grow">
-                                                <p className="text-md font-medium">{image.file?.name || `Image ${index + 1}`}</p>
+                                                <p className="text-md font-medium">{`Image ${index + 1}`}</p>
                                                 {
                                                     index === 0 && (
                                                         <Badge variant="primary">
@@ -71,8 +82,8 @@ export default function MultiImageUploader(
                                                     )
                                                 }
                                             </div>
-                                            <div className="flex items-center">
-                                                <button className="cursor-pointer p-2">
+                                            <div className="flex items-center pr-4 space-x-2">
+                                                <button className="cursor-pointer p-2" onClick={() => {handleDeleteImage(image.id)}}>
                                                     <XIcon className="text-destructive" />
                                                 </button>
                                                 <div>
