@@ -17,12 +17,14 @@ export type ImageUpload = {
 type Props = {
     images?: ImageUpload[];
     onImagesChange: (images: ImageUpload[]) => void;
+    urlFormatter?: (image: ImageUpload) => string;
 }
 
 export default function MultiImageUploader(
     {
         images = [],
-        onImagesChange
+        onImagesChange,
+        urlFormatter
     }
         : Props
 ) {
@@ -70,7 +72,7 @@ export default function MultiImageUploader(
                                     >
                                         <div className="bg-gray-200 rounded-2xl flex items-center gap-2">
                                             <div className="size-40 relative rounded-2xl overflow-hidden">
-                                                <Image src={image.url} alt={`Property Image ${index + 1}`} className="object-cover" fill />
+                                                <Image src={urlFormatter ? urlFormatter(image) : image.url} alt={`Property Image ${index + 1}`} className="object-cover" fill />
                                             </div>
                                             <div className="flex-grow">
                                                 <p className="text-md font-medium">{`Image ${index + 1}`}</p>
@@ -95,6 +97,7 @@ export default function MultiImageUploader(
                                 )}
                             </Draggable>
                         ))}
+                        {provided.placeholder}
                     </div>
                 )}
             </Droppable>

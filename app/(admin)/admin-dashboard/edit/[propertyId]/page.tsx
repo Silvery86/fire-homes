@@ -41,6 +41,7 @@ export default async function EdirtPropertyPage({params} :
                 bedrooms = {property.bedrooms}
                 bathrooms = {property.bathrooms}
                 status = {property.status}
+                images = {property.images || []}
                 />
             </CardContent>
         </Card>

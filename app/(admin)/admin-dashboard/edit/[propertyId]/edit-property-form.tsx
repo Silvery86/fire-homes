@@ -22,6 +22,7 @@ export default function EditPropertyForm({
     bedrooms,
     bathrooms,
     status,
+    images = []
 }: Props) {
     const router = useRouter();
     const handleSubmit = async (data: z.infer<typeof PropertyDataSchema>) => {
@@ -56,7 +57,10 @@ export default function EditPropertyForm({
                     bedrooms,
                     bathrooms,
                     status,
-                    images: [],
+                    images : images.map(image => ({
+                        id: image,
+                        url: image,
+                    })),
                 }}
             />
         </div>
