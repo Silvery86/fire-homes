@@ -1,13 +1,15 @@
 "use client"
 
 import PropertyForm from "@/components/property-form"
-import { auth } from "@/firebase/client"
+import { auth, storage } from "@/firebase/client"
 import { Property } from "@/types/property"
-import { PropertyDataSchema } from "@/validation/propertySchema"
+import { PropertySchema } from "@/validation/propertySchema"
 import { z } from "zod"
 import { updateProperty } from "./action"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { deleteObject, ref, uploadBytesResumable, UploadTask } from "firebase/storage"
+import { savePropertyImage } from "../../action"
 
 type Props = Property
 
@@ -25,17 +27,40 @@ export default function EditPropertyForm({
     images = []
 }: Props) {
     const router = useRouter();
-    const handleSubmit = async (data: z.infer<typeof PropertyDataSchema>) => {
-         const token = await auth.currentUser?.getIdToken();
+    const handleSubmit = async (data: z.infer<typeof PropertySchema>) => {
+        const token = await auth.currentUser?.getIdToken();
         if (!token) {
             console.error("User is not authenticated");
             return;
         }
-        const res = await updateProperty({...data, id}, token)
+        const {images : newImages, ...rest} = data;
+        const res = await updateProperty({...rest, id}, token)
         if (res.error) {
             toast.error("Error", { description: res.message });
             return;
         }
+
+        const storageTasks: (UploadTask | Promise<void>)[] = [];
+        const imagesToDelete = images.filter((image) => !newImages.find((newImage) => newImage.id === image));
+
+        imagesToDelete.forEach((image) => {
+            storageTasks.push(deleteObject(ref(storage, image)));
+        })
+
+        const paths: string[] = [];
+        newImages.forEach((image, index) => {
+            if(image.file){
+                 const path = `properties/${id}/${Date.now()}-${index}-${image.file.name}`;
+                paths.push(path);
+                const storageRef = ref(storage, path);
+                storageTasks.push(uploadBytesResumable(storageRef, image.file));
+            }else {
+                paths.push(image.id);
+            }
+        })
+        await Promise.all(storageTasks);
+        await savePropertyImage({ propertyId: id, images: paths }, token);
+
         toast.success("Success", { description: res.message });
         router.push("/admin-dashboard");
      }
