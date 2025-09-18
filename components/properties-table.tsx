@@ -52,7 +52,7 @@ export default async function PropertiesTable(
                                 <TableCell><PropertyStatusBadge status={property.status} /></TableCell>
                                 <TableCell className="flex gap-2 justify-end">
                                     <Button asChild variant="outline" size="icon" className="p-0">
-                                        <Link href={`/admin-dashboard/property/${property.id}`}>
+                                        <Link href={`/property/${property.id}`}>
                                         <EyeIcon />
                                         </Link>
                                     </Button>
