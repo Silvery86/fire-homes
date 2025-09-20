@@ -1,9 +1,13 @@
 import PropertyStatusBadge from "@/components/property-status-badge";
 import { Button } from "@/components/ui/button";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { getPropertyById } from "@/data/properties";
 import { ArrowLeftIcon, BathIcon, BedIcon } from "lucide-react";
 import numeral from "numeral";
 import ReactMarkdown from "react-markdown";
+import Image from "next/image";
+import Autoplay from 'embla-carousel-autoplay'
+import PropertyCarousel from "@/components/property-carousel";
 
 export default async function PropertyPage({ params }:
     { params: Promise<any> }
@@ -16,9 +20,12 @@ export default async function PropertyPage({ params }:
     return (
         <section className="grid grid-cols-[1fr_500px]">
             <div>
+                {!!property?.images &&
+                    <PropertyCarousel images={property.images} />
+                }
                 <div className="property-description max-w-screen-md mx-auto py-10 px-4">
                     <Button variant="outline">
-                        <ArrowLeftIcon/>
+                        <ArrowLeftIcon />
                     </Button>
                     <ReactMarkdown>
                         {property?.description}
@@ -42,7 +49,6 @@ export default async function PropertyPage({ params }:
                     <div className="flex gap-10">
                         <div className="flex gap-2">
                             <BedIcon /> {property?.bedrooms} bedrooms
-
                         </div>
                         <div className="flex gap-2">
                             <BathIcon /> {property?.bathrooms} bathrooms
